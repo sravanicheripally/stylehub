@@ -3,7 +3,7 @@ from enum import Enum
 
 from sqlalchemy import Boolean, DateTime, Enum as SQLEnum
 from sqlalchemy import String
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
 
@@ -69,3 +69,8 @@ class User(Base):
         onupdate=datetime.utcnow,
         nullable=False,
     )
+
+    products = relationship(
+    "Product",
+    back_populates="seller",
+)

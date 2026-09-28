@@ -5,3 +5,5 @@ __pycache__/
 .idea/
 .vscode/
 .pytest_cache/
+app/static/product-images/
+logs/
