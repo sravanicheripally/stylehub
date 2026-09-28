@@ -1,6 +1,5 @@
-import email
-
-from fastapi import APIRouter, Depends, HTTPException, logger, status
+import logging
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.api.dependencies import get_current_user
 from app.models.user import User
@@ -62,7 +61,7 @@ def login(
     login_data: LoginRequest,
     db: Session = Depends(get_db),
 ):
-    logger.info("Login attempt for email: %s", email)
+    logging.info("Login attempt for email: %s", login_data.email)
     user = get_user_by_email(
         db,
         login_data.email,
@@ -89,7 +88,7 @@ def login(
             "role": user.role.value,
         }
     )
-    logger.info("Login successful for user: %s", user.email)
+    logging.info("Login successful for user: %s", user.email)
     return {
         "access_token": access_token,
         "token_type": "bearer",
