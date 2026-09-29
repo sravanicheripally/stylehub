@@ -1,4 +1,6 @@
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, field_validator
+
+from app.models.user import UserRole
 
 
 class UserRegister(BaseModel):
@@ -9,6 +11,22 @@ class UserRegister(BaseModel):
         default=None,
         max_length=20,
     )
+
+
+class AdminUserCreate(UserRegister):
+    full_name: str | None = Field(
+        default=None,
+        min_length=2,
+        max_length=150,
+    )
+    role: UserRole
+
+    @field_validator("role", mode="before")
+    @classmethod
+    def normalize_role(cls, value: str | UserRole) -> str | UserRole:
+        if isinstance(value, str):
+            return value.lower()
+        return value
 
 
 class UserResponse(BaseModel):

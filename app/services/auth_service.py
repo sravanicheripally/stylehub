@@ -21,6 +21,7 @@ def get_user_by_email(
 def create_user(
     db: Session,
     user_data: UserRegister,
+    role: UserRole = UserRole.CUSTOMER,
 ) -> User:
 
     user = User(
@@ -28,9 +29,12 @@ def create_user(
         password_hash=hash_password(
             user_data.password
         ),
-        full_name=user_data.full_name,
+        full_name=(
+            user_data.full_name
+            or user_data.email.partition("@")[0]
+        ),
         phone=user_data.phone,
-        role=UserRole.CUSTOMER,
+        role=role,
     )
 
     db.add(user)
