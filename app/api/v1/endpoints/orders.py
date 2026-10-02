@@ -18,6 +18,7 @@ from app.services.order_service import (
 )
 from app.services.payment_verification import (
     PaymentVerificationError,
+    PaymentVerificationUnavailable,
     verify_payment,
 )
 
@@ -43,6 +44,11 @@ def create_order_endpoint(
     try:
         verify_payment(order_data.payment)
         return create_order(db, order_data, current_user)
+    except PaymentVerificationUnavailable as exc:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail=str(exc),
+        ) from exc
     except PaymentVerificationError as exc:
         raise HTTPException(
             status_code=status.HTTP_402_PAYMENT_REQUIRED,

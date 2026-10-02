@@ -10,6 +10,10 @@ class PaymentVerificationError(Exception):
     pass
 
 
+class PaymentVerificationUnavailable(PaymentVerificationError):
+    pass
+
+
 def verify_payment(payment: RazorpayPaymentProof) -> None:
     request = Request(
         f"{settings.payment_service_url.rstrip('/')}/payments/verify",
@@ -19,20 +23,38 @@ def verify_payment(payment: RazorpayPaymentProof) -> None:
     )
 
     try:
-        with urlopen(request, timeout=10) as response:
+        with urlopen(request, timeout=25) as response:
             if not 200 <= response.status < 300:
                 raise PaymentVerificationError(
                     "Payment verification service rejected the payment"
                 )
     except HTTPError as exc:
-        if exc.code in {400, 401, 403, 422}:
+        if exc.code in {400, 422}:
             raise PaymentVerificationError(
                 "Payment verification failed"
             ) from exc
-        raise PaymentVerificationError(
-            "Payment verification service is unavailable"
+        if exc.code == 404:
+            raise PaymentVerificationUnavailable(
+                "Payment verification route was not found; check "
+                "PAYMENT_SERVICE_URL and the /payments/verify route"
+            ) from exc
+        if exc.code in {401, 403}:
+            raise PaymentVerificationUnavailable(
+                "Payment service rejected the backend request; check its "
+                "authorization settings"
+            ) from exc
+        if exc.code == 429 or exc.code >= 500:
+            raise PaymentVerificationUnavailable(
+                f"Payment verification service returned HTTP {exc.code}"
+            ) from exc
+        raise PaymentVerificationUnavailable(
+            f"Payment verification service returned unexpected HTTP {exc.code}"
         ) from exc
     except URLError as exc:
-        raise PaymentVerificationError(
+        raise PaymentVerificationUnavailable(
             "Payment verification service is unavailable"
+        ) from exc
+    except TimeoutError as exc:
+        raise PaymentVerificationUnavailable(
+            "Payment verification service timed out"
         ) from exc
