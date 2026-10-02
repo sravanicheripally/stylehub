@@ -13,6 +13,7 @@ from fastapi import (
 from sqlalchemy.orm import Session
 
 from app.api.permissions import require_roles
+from app.core.config import settings
 from app.db.dependencies import get_db
 from app.models.user import User, UserRole
 from app.models.product_image import ProductImage
@@ -37,7 +38,7 @@ router = APIRouter(
     tags=["Products"],
 )
 
-IMAGE_DIR = Path(__file__).resolve().parents[3] / "static" / "product-images"
+IMAGE_DIR = Path(settings.media_dir) / "product-images"
 MAX_IMAGE_SIZE = 5 * 1024 * 1024
 MAX_IMAGES_PER_UPLOAD = 5
 IMAGE_SIGNATURES = {

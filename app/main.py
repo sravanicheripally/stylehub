@@ -32,7 +32,7 @@ app = FastAPI(
     version=settings.app_version,
 )
 
-static_dir = Path(__file__).resolve().parent / "static"
+static_dir = Path(settings.media_dir)
 static_dir.mkdir(parents=True, exist_ok=True)
 app.mount(
     "/media",

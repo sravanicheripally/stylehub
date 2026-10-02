@@ -88,6 +88,7 @@ class Product(Base):
         "ProductImage",
         back_populates="product",
         cascade="all, delete-orphan",
+        order_by="ProductImage.id.desc()",
     )
 
     seller_id: Mapped[int | None] = mapped_column(

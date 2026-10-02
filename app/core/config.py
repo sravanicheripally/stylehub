@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -15,6 +17,7 @@ class Settings(BaseSettings):
     jwt_algorithm: str = "HS256"
     access_token_expire_minutes: int = 30
     payment_service_url: str = "https://payment-gateway-3st9.onrender.com"
+    media_dir: Path = Path(__file__).resolve().parents[1] / "static"
 
     model_config = SettingsConfigDict(
         env_file=".env",
