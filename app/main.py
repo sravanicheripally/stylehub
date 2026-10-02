@@ -74,6 +74,7 @@ app.include_router(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
+        "https://stylehub-frontend.onrender.com",
         "https://stylehub-frontend-v2ei.onrender.com",
         "http://localhost:5173",
         "http://127.0.0.1:5173",
