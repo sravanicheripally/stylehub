@@ -6,6 +6,7 @@ from sqlalchemy import text
 
 from app.api.v1.endpoints.auth import router as auth_router
 from app.api.v1.endpoints.admin import router as admin_router
+from app.api.v1.endpoints.orders import router as orders_router
 from app.core.config import settings
 from app.db.database import engine
 from app.api.v1.endpoints.categories import (
@@ -47,6 +48,11 @@ app.include_router(
 
 app.include_router(
     admin_router,
+    prefix="/api/v1",
+)
+
+app.include_router(
+    orders_router,
     prefix="/api/v1",
 )
 

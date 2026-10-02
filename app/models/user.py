@@ -71,6 +71,11 @@ class User(Base):
     )
 
     products = relationship(
-    "Product",
-    back_populates="seller",
-)
+        "Product",
+        back_populates="seller",
+    )
+
+    orders = relationship(
+        "Order",
+        back_populates="customer",
+    )

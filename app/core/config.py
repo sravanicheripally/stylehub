@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     jwt_secret_key: str
     jwt_algorithm: str = "HS256"
     access_token_expire_minutes: int = 30
+    payment_service_url: str = "http://127.0.0.1:8080"
 
     model_config = SettingsConfigDict(
         env_file=".env",
